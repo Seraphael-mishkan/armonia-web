@@ -26,7 +26,7 @@ export const About = () => {
           >
             <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl relative">
               <img 
-                src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
+                src="/imagen_alberca1.png" 
                 alt="Administración Profesional" 
                 className="w-full h-full object-cover"
               />
