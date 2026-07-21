@@ -14,24 +14,25 @@ export const Hero = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-brand-black/80 to-brand-black/40"></div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-        <div className="max-w-3xl">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full flex justify-center">
+        <div className="max-w-4xl text-center">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            initial={{ opacity: 0, scale: 0.95, y: 40 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="flex flex-col items-center"
           >
-            <span className="inline-block py-1 px-3 rounded-full bg-brand-green/20 border border-brand-green/30 text-brand-green font-medium text-sm mb-6 backdrop-blur-sm">
+            <span className="inline-block py-1 px-3 rounded-full bg-brand-green/20 border border-brand-green/30 text-brand-green font-medium text-sm mb-6 backdrop-blur-sm shadow-sm">
               Líderes en Morelos
             </span>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white leading-tight mb-6">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white leading-tight mb-6 drop-shadow-lg">
               Administración Profesional de Condominios en Morelos
             </h1>
-            <p className="text-xl text-gray-200 mb-10 font-light max-w-2xl">
+            <p className="text-xl md:text-2xl text-gray-100 mb-10 font-light max-w-3xl drop-shadow-md">
               Tranquilidad, orden, plusvalía y transparencia para tu comunidad. Protegemos tu patrimonio con procesos legales sólidos y gestión financiera transparente.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center w-full">
               <a 
                 href="#contacto" 
                 className="bg-brand-green hover:bg-brand-darkGreen text-white px-8 py-4 rounded-lg font-medium text-lg transition-all text-center shadow-[0_0_20px_rgba(139,195,74,0.3)] hover:shadow-[0_0_25px_rgba(139,195,74,0.5)] transform hover:-translate-y-1"
