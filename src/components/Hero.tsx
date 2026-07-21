@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 export const Hero = () => {
   return (
-    <section id="inicio" className="relative min-h-screen flex items-center pt-20">
+    <section id="inicio" className="relative min-h-screen flex items-center pt-32 md:pt-48">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img 
