@@ -25,11 +25,11 @@ export const Navbar = () => {
     <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'glass-nav py-3' : 'bg-transparent py-5'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
-          <div className="flex items-center">
+          <div className="flex items-center relative h-12 md:h-16 w-24 md:w-32">
             <img 
               src="/logoarmonia.png" 
               alt="Armonía Logo" 
-              className="h-24 md:h-32 w-auto object-contain" 
+              className="absolute top-0 h-24 md:h-32 w-auto object-contain max-w-none drop-shadow-md" 
             />
           </div>
           
