@@ -29,7 +29,7 @@ export const Navbar = () => {
             <img 
               src="/logoarmonia.png" 
               alt="Armonía Logo" 
-              className="h-12 md:h-14 w-auto object-contain" 
+              className="h-24 md:h-32 w-auto object-contain" 
             />
           </div>
           
