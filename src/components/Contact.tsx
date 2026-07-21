@@ -1,6 +1,41 @@
-import { MapPin, Phone, Mail, Send } from 'lucide-react';
+import { useState } from 'react';
+import { MapPin, Phone, Mail, Send, CheckCircle2 } from 'lucide-react';
 
 export const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    condo: '',
+    phone: '',
+    email: '',
+    message: '',
+  });
+
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Format the WhatsApp message professionally
+    const text = `*SOLICITUD DE DIAGNÓSTICO (SITIO WEB)*\n\n` +
+      `👤 *Nombre:* ${formData.name || 'No especificado'}\n` +
+      `🏢 *Condominio:* ${formData.condo || 'No especificado'}\n` +
+      `📞 *Teléfono:* ${formData.phone || 'No especificado'}\n` +
+      `✉️ *Correo:* ${formData.email || 'No especificado'}\n\n` +
+      `📝 *Mensaje / Problemática:* \n${formData.message || 'Sin mensaje'}`;
+
+    const whatsappUrl = `https://wa.me/527352894618?text=${encodeURIComponent(text)}`;
+    
+    setSubmitted(true);
+    window.open(whatsappUrl, '_blank');
+  };
+
   return (
     <section id="contacto" className="py-24 bg-brand-altBg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -76,39 +111,88 @@ export const Contact = () => {
 
           <div className="w-full lg:w-7/12 p-10 md:p-14">
             <h3 className="text-2xl font-heading font-bold text-brand-black mb-6">Solicitar Diagnóstico Sin Costo</h3>
-            <form className="space-y-6">
+            
+            {submitted && (
+              <div className="mb-6 p-4 bg-brand-green/10 border border-brand-green/30 rounded-xl flex items-center gap-3 text-brand-black">
+                <CheckCircle2 className="text-brand-green shrink-0" size={24} />
+                <div>
+                  <p className="font-bold">¡Solicitud en proceso!</p>
+                  <p className="text-sm text-brand-darkGray">Se ha abierto WhatsApp con tus datos formateados. Si no se abrió automáticamente, asegúrate de permitir las ventanas emergentes.</p>
+                </div>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-brand-darkGray mb-2">Nombre completo</label>
-                  <input type="text" id="name" className="w-full bg-brand-altBg border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent transition-all" placeholder="Juan Pérez" />
+                  <label htmlFor="name" className="block text-sm font-medium text-brand-darkGray mb-2">Nombre completo *</label>
+                  <input 
+                    type="text" 
+                    id="name" 
+                    required
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="w-full bg-brand-altBg border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent transition-all" 
+                    placeholder="Juan Pérez" 
+                  />
                 </div>
                 <div>
-                  <label htmlFor="condo" className="block text-sm font-medium text-brand-darkGray mb-2">Nombre del condominio</label>
-                  <input type="text" id="condo" className="w-full bg-brand-altBg border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent transition-all" placeholder="Residencial Los Prados" />
+                  <label htmlFor="condo" className="block text-sm font-medium text-brand-darkGray mb-2">Nombre del condominio *</label>
+                  <input 
+                    type="text" 
+                    id="condo" 
+                    required
+                    value={formData.condo}
+                    onChange={handleChange}
+                    className="w-full bg-brand-altBg border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent transition-all" 
+                    placeholder="Residencial Los Prados" 
+                  />
                 </div>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-brand-darkGray mb-2">Teléfono</label>
-                  <input type="tel" id="phone" className="w-full bg-brand-altBg border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent transition-all" placeholder="735 000 0000" />
+                  <label htmlFor="phone" className="block text-sm font-medium text-brand-darkGray mb-2">Teléfono *</label>
+                  <input 
+                    type="tel" 
+                    id="phone" 
+                    required
+                    value={formData.phone}
+                    onChange={handleChange}
+                    className="w-full bg-brand-altBg border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent transition-all" 
+                    placeholder="735 000 0000" 
+                  />
                 </div>
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-brand-darkGray mb-2">Correo electrónico</label>
-                  <input type="email" id="email" className="w-full bg-brand-altBg border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent transition-all" placeholder="correo@ejemplo.com" />
+                  <input 
+                    type="email" 
+                    id="email" 
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full bg-brand-altBg border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent transition-all" 
+                    placeholder="correo@ejemplo.com" 
+                  />
                 </div>
               </div>
 
               <div>
                 <label htmlFor="message" className="block text-sm font-medium text-brand-darkGray mb-2">Mensaje o problemática actual</label>
-                <textarea id="message" rows={4} className="w-full bg-brand-altBg border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent transition-all resize-none" placeholder="Breve descripción de lo que necesitan resolver..."></textarea>
+                <textarea 
+                  id="message" 
+                  rows={4} 
+                  value={formData.message}
+                  onChange={handleChange}
+                  className="w-full bg-brand-altBg border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent transition-all resize-none" 
+                  placeholder="Breve descripción de lo que necesitan resolver..."
+                ></textarea>
               </div>
 
-              <button type="submit" className="w-full bg-brand-green hover:bg-brand-darkGreen text-white font-bold py-4 rounded-xl transition-colors flex items-center justify-center gap-2">
+              <button type="submit" className="w-full bg-brand-green hover:bg-brand-darkGreen text-white font-bold py-4 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-lg">
                 Enviar Solicitud <Send size={20} />
               </button>
               <p className="text-xs text-center text-gray-400 mt-4">
-                Al enviar este formulario acepta nuestra política de privacidad. Sus datos están seguros con nosotros.
+                Al hacer clic se formateará tu solicitud y se abrirá WhatsApp para enviarla directamente.
               </p>
             </form>
           </div>
