@@ -25,13 +25,12 @@ export const Navbar = () => {
     <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'glass-nav py-3' : 'bg-transparent py-5'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-brand-green rounded-lg flex items-center justify-center text-white font-heading font-bold text-xl">
-              A
-            </div>
-            <span className={`font-heading font-bold text-xl ${isScrolled ? 'text-brand-black' : 'text-white'}`}>
-              Armonía
-            </span>
+          <div className="flex items-center">
+            <img 
+              src="/logoarmonia.png" 
+              alt="Armonía Logo" 
+              className="h-12 md:h-14 w-auto object-contain" 
+            />
           </div>
           
           {/* Desktop Menu */}
