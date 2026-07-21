@@ -3,11 +3,11 @@ import { motion } from 'framer-motion';
 
 export const Hero = () => {
   return (
-    <section id="inicio" className="relative min-h-screen flex items-center pt-32 md:pt-48">
+    <section id="inicio" className="relative min-h-screen flex items-center pt-32 md:pt-48 pb-32 md:pb-48">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80" 
+          src="/armoniaportadahero.jpeg" 
           alt="Condominio moderno" 
           className="w-full h-full object-cover"
         />
