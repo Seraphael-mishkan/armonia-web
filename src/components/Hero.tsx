@@ -7,7 +7,7 @@ export const Hero = () => {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="/armoniaportadahero.jpeg" 
+          src="/portadanew.png" 
           alt="Condominio moderno" 
           className="w-full h-full object-cover"
         />
