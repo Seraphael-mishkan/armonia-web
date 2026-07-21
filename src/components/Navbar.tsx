@@ -45,7 +45,7 @@ export const Navbar = () => {
               </a>
             ))}
             <a 
-              href="https://wa.me/527352894618" 
+              href="https://wa.me/527352894618?text=Hola%20visite%20tu%20sitio%20web%20y%20me%20interesa%20mas%20informacion" 
               target="_blank" 
               rel="noreferrer"
               className="bg-brand-green hover:bg-brand-darkGreen text-white px-5 py-2 rounded-full font-medium transition-colors shadow-lg"
@@ -81,7 +81,7 @@ export const Navbar = () => {
               </a>
             ))}
             <a 
-              href="https://wa.me/527352894618" 
+              href="https://wa.me/527352894618?text=Hola%20visite%20tu%20sitio%20web%20y%20me%20interesa%20mas%20informacion" 
               target="_blank" 
               rel="noreferrer"
               className="block mt-4 text-center bg-brand-green text-white px-5 py-3 rounded-lg font-medium"

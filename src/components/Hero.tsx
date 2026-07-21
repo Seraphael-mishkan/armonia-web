@@ -34,18 +34,12 @@ export const Hero = () => {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center w-full">
               <a 
-                href="#contacto" 
+                href="https://wa.me/527352894618?text=Hola%20visite%20tu%20sitio%20web%20y%20me%20interesa%20mas%20informacion" 
+                target="_blank"
+                rel="noreferrer"
                 className="bg-brand-green hover:bg-brand-darkGreen text-white px-8 py-4 rounded-lg font-medium text-lg transition-all text-center shadow-[0_0_20px_rgba(139,195,74,0.3)] hover:shadow-[0_0_25px_rgba(139,195,74,0.5)] transform hover:-translate-y-1"
               >
                 Solicitar Diagnóstico Sin Costo
-              </a>
-              <a 
-                href="https://wa.me/527352894618"
-                target="_blank"
-                rel="noreferrer"
-                className="glass-card hover:bg-white/20 text-white px-8 py-4 rounded-lg font-medium text-lg transition-all text-center flex items-center justify-center gap-2"
-              >
-                Contactar por WhatsApp
               </a>
             </div>
           </motion.div>

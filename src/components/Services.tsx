@@ -97,7 +97,7 @@ export const Services = () => {
             <p className="mb-6 relative z-10 opacity-90">
               Capacidad integral para proyectos de construcción y remodelación que fortalecen la infraestructura y plusvalía del condominio.
             </p>
-            <a href="#contacto" className="inline-flex items-center gap-2 font-medium bg-white/20 hover:bg-white/30 px-5 py-2.5 rounded-lg w-fit transition-colors relative z-10">
+            <a href="https://wa.me/527352894618?text=Hola%20visite%20el%20sitio%20web%20y%20me%20interesa%20un%20proyecto%20de%20remodelacion" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 font-medium bg-white/20 hover:bg-white/30 px-5 py-2.5 rounded-lg w-fit transition-colors relative z-10">
               Cotizar proyecto <ArrowRight size={18} />
             </a>
           </motion.div>
