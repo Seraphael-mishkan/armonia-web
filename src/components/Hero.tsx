@@ -6,10 +6,13 @@ export const Hero = () => {
     <section id="inicio" className="relative min-h-screen flex items-center pt-32 md:pt-48 pb-32 md:pb-48">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
-        <img 
-          src="/portadanew.png" 
-          alt="Condominio moderno" 
+        <video 
+          src="/portadanew.mp4" 
           className="w-full h-full object-cover"
+          autoPlay
+          loop
+          muted
+          playsInline
         />
         <div className="absolute inset-0 bg-gradient-to-r from-brand-black/80 to-brand-black/40"></div>
       </div>
