@@ -35,7 +35,7 @@ const services = [
     icon: Droplets,
     items: ['Tratamiento químico', 'Limpieza profunda', 'Control de calidad del agua'],
     video: '/sv_albercas.mp4',
-    position: 'left'
+    position: 'right'
   },
   {
     title: 'Mantenimiento General',
