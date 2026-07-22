@@ -301,7 +301,7 @@ export const Services = () => {
         </div>
 
         {/* Floating Service Card */}
-        <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 md:mt-20">
+        <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-44">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeIndex}
@@ -309,7 +309,7 @@ export const Services = () => {
               animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
               exit={{ opacity: 0, x: services[activeIndex].position === 'left' ? -50 : 50, filter: 'blur(8px)' }}
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className={`bg-brand-black/80 p-8 md:p-10 rounded-3xl border border-white/15 shadow-[0_25px_60px_rgba(0,0,0,0.7)] max-w-lg backdrop-blur-xl ${services[activeIndex].position === 'left' ? 'mr-auto service-card-enter-left' : 'ml-auto service-card-enter-right'}`}
+              className={`bg-brand-black/80 p-7 md:p-8 rounded-3xl border border-white/15 shadow-[0_25px_60px_rgba(0,0,0,0.7)] max-w-md backdrop-blur-xl ${services[activeIndex].position === 'left' ? 'mr-auto service-card-enter-left' : 'ml-auto service-card-enter-right'}`}
             >
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-14 h-14 bg-brand-green/20 rounded-2xl flex items-center justify-center border border-brand-green/40 shadow-inner">
