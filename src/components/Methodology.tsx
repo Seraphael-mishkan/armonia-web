@@ -2,11 +2,10 @@ import { motion } from 'framer-motion';
 
 export const Methodology = () => {
   const steps = [
-    { num: '1', title: 'Diagnóstico sin costo', desc: 'Día 1-7. Análisis inicial de las finanzas y estado del condominio.' },
-    { num: '2', title: 'Propuesta personalizada', desc: 'Presentación de un plan de trabajo adaptado a sus necesidades reales.' },
-    { num: '3', title: 'Formalización legal', desc: 'Contrato transparente y firmas para iniciar con total seguridad.' },
-    { num: '4', title: 'Ejecución y control', desc: 'Toma de administración y auditoría de documentos previos.' },
-    { num: '5', title: 'Plan primeros 90 días', desc: 'Acciones de choque para estabilizar cobranza y servicios.' },
+    { num: '1', title: 'Diagnóstico Inicial', desc: 'Día 1-7. Evaluación profunda de la situación legal, financiera y física actual.' },
+    { num: '2', title: 'Propuesta y Acción', desc: 'Diseño de estrategias para resolver hallazgos, ajustadas a la cuota de mantenimiento actual.' },
+    { num: '3', title: 'Formalización Legal', desc: 'Nombramiento de Consejos Directivos en asambleas protocolizadas para facultades de representación.' },
+    { num: '4', title: 'Ejecución y Control', desc: 'Implementación del plan de trabajo con supervisión constante y mecanismos de evaluación.' },
   ];
 
   return (

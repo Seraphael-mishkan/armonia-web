@@ -24,9 +24,11 @@ export const Experience = () => {
 
   const results = [
     'Recuperación de cartera vencida',
-    'Incremento en recaudación',
-    'Reducción de incidencias',
-    'Mejoras en áreas comunes',
+    'Incremento en la recaudación de cuotas',
+    'Reducción de incidencias operativas',
+    'Mejoras realizadas en áreas comunes',
+    'Proyectos de mantenimiento ejecutados',
+    'Alto nivel de satisfacción de residentes',
   ];
 
   return (
