@@ -25,9 +25,13 @@ export const Hero = () => {
             transition={{ duration: 1, ease: "easeOut" }}
             className="flex flex-col items-center"
           >
-            <span className="inline-block py-1 px-3 rounded-full bg-brand-green/20 border border-brand-green/30 text-brand-green font-medium text-sm mb-6 backdrop-blur-sm shadow-sm">
-              Líderes en Morelos
-            </span>
+            <div className="flex items-center justify-center gap-3 mb-6 px-4">
+              <span className="w-6 md:w-10 h-[2px] bg-brand-green/80 rounded-full"></span>
+              <span className="text-brand-green font-semibold tracking-wider md:tracking-widest text-xs sm:text-sm md:text-base uppercase drop-shadow-[0_2px_12px_rgba(139,195,74,0.4)] text-center">
+                Somos la mejor opción en administración de condominios
+              </span>
+              <span className="w-6 md:w-10 h-[2px] bg-brand-green/80 rounded-full"></span>
+            </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-white leading-tight mb-6 drop-shadow-lg">
               Administración Profesional de Condominios en Morelos
             </h1>
