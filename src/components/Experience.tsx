@@ -11,7 +11,7 @@ export const Experience = () => {
 
   const stats = [
     { value: 350, suffix: '+', label: 'Unidades Administradas', icon: Home },
-    { value: 8, suffix: ' Años', label: 'De Experiencia', icon: CheckCircle },
+    { value: new Date().getFullYear() - 2016, suffix: ' Años', label: 'De Experiencia', icon: CheckCircle },
     { value: 100, suffix: '%', label: 'Transparencia Financiera', icon: TrendingUp },
   ];
 
