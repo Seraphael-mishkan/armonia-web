@@ -16,10 +16,10 @@ export const Experience = () => {
   ];
 
   const cases = [
-    'Vista Volcanes – Atlatlahucan',
-    'Residencial Valle del Pedregal – Ayala',
-    'Residencial Los Prados',
-    'Complejos Oasis y Manantial II – Yautepec',
+    { title: 'Vista Volcanes', desc: 'Administración de 203 casas de interés medio en Atlatlahucan, Morelos.' },
+    { title: 'Residencial Valle del Pedregal', desc: 'Gestión de 104 casas residenciales en el municipio de Ayala.' },
+    { title: 'Residencial Los Prados', desc: 'Supervisión operativa y legal para 135 casas en Yautepec.' },
+    { title: 'Complejos Oasis, Villas Oacalco y Manantial II', desc: 'Administración de múltiples clústeres (Oasis 1, 3 y Villas Oacalco 20, 22) sumando más de 200 familias atendidas.' },
   ];
 
   const results = [
@@ -99,9 +99,15 @@ export const Experience = () => {
             </h3>
             <div className="space-y-4">
               {cases.map((c, idx) => (
-                <div key={idx} className="bg-white/5 border border-white/10 p-4 rounded-xl flex items-center gap-4 hover:bg-white/10 transition-colors">
-                  <div className="w-2 h-2 rounded-full bg-brand-green"></div>
-                  <span className="text-lg text-gray-200">{c}</span>
+                <div key={idx} className="bg-white/5 border border-white/10 p-5 rounded-xl hover:bg-white/10 transition-colors relative group">
+                  <div className="absolute left-0 top-0 w-1 h-full bg-brand-green rounded-l-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <h4 className="text-xl text-white font-bold mb-2 flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-brand-green"></div>
+                    {c.title}
+                  </h4>
+                  <p className="text-gray-400 text-sm leading-relaxed pl-3.5">
+                    {c.desc}
+                  </p>
                 </div>
               ))}
             </div>
