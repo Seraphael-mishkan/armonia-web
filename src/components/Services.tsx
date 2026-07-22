@@ -10,35 +10,40 @@ const services = [
     description: 'Gestión operativa, financiera y legal para condominios, enfocada en transparencia y orden.',
     icon: Building2,
     items: ['Control de ingresos y egresos', 'Estados financieros mensuales', 'Recuperación de cartera vencida', 'Organización de asambleas'],
-    video: '/sv_admin.mp4'
+    video: '/sv_admin.mp4',
+    position: 'left'
   },
   {
     title: 'Seguridad Privada',
     description: 'Tranquilidad total con protocolos estrictos y personal capacitado.',
     icon: ShieldCheck,
     items: ['Coordinación con empresas certificadas', 'Protocolos de acceso', 'Supervisión operativa'],
-    video: '/sv_seguridad.mp4'
+    video: '/sv_seguridad.mp4',
+    position: 'left'
   },
   {
     title: 'Jardinería Profesional',
     description: 'Conservación estética del entorno con diseño y mantenimiento de áreas verdes.',
     icon: Trees,
     items: ['Diseño y mantenimiento', 'Poda y fertilización', 'Control fitosanitario'],
-    video: '/sv_jardineria.mp4'
+    video: '/sv_jardineria.mp4',
+    position: 'right'
   },
   {
     title: 'Limpieza de Albercas',
     description: 'Tratamiento y mantenimiento profesional para instalaciones acuáticas impecables.',
     icon: Droplets,
     items: ['Tratamiento químico', 'Limpieza profunda', 'Control de calidad del agua'],
-    video: '/sv_albercas.mp4'
+    video: '/sv_albercas.mp4',
+    position: 'left'
   },
   {
     title: 'Mantenimiento General',
     description: 'Conservación técnica de áreas comunes y particulares para asegurar la plusvalía del inmueble.',
     icon: Wrench,
     items: ['Supervisión preventiva y correctiva', 'Coordinación de proveedores', 'Proyectos de mejora'],
-    video: '/sv_mantenimiento.mp4'
+    video: '/sv_mantenimiento.mp4',
+    position: 'right'
   },
   {
     title: 'Remodelación y Proyectos',
@@ -46,7 +51,8 @@ const services = [
     icon: Wrench,
     items: [],
     video: '/sv_remodelacion.mp4',
-    isSpecial: true
+    isSpecial: true,
+    position: 'right'
   }
 ];
 
@@ -299,24 +305,24 @@ export const Services = () => {
           <AnimatePresence mode="wait">
             <motion.div
               key={activeIndex}
-              initial={{ opacity: 0, x: activeIndex % 2 === 0 ? 50 : -50, filter: 'blur(8px)' }}
+              initial={{ opacity: 0, x: services[activeIndex].position === 'left' ? -50 : 50, filter: 'blur(8px)' }}
               animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, x: activeIndex % 2 === 0 ? -50 : 50, filter: 'blur(8px)' }}
+              exit={{ opacity: 0, x: services[activeIndex].position === 'left' ? -50 : 50, filter: 'blur(8px)' }}
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className={`glass-card bg-white/10 p-8 md:p-10 rounded-3xl border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.5)] max-w-lg backdrop-blur-xl ${activeIndex % 2 === 0 ? 'mr-auto service-card-enter-left' : 'ml-auto service-card-enter-right'}`}
+              className={`bg-brand-black/80 p-8 md:p-10 rounded-3xl border border-white/15 shadow-[0_25px_60px_rgba(0,0,0,0.7)] max-w-lg backdrop-blur-xl ${services[activeIndex].position === 'left' ? 'mr-auto service-card-enter-left' : 'ml-auto service-card-enter-right'}`}
             >
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-14 h-14 bg-brand-green/20 rounded-2xl flex items-center justify-center border border-brand-green/40 shadow-inner">
                   {React.createElement(services[activeIndex].icon, { className: "text-brand-green", size: 30 })}
                 </div>
-                <span className="text-xs font-bold text-white/70 tracking-widest uppercase bg-white/10 px-3 py-1 rounded-md border border-white/10">
+                <span className="text-xs font-bold text-white/80 tracking-widest uppercase bg-white/10 px-3 py-1 rounded-md border border-white/15">
                   0{activeIndex + 1} / 0{services.length}
                 </span>
               </div>
               <h3 className="text-2xl md:text-3xl font-bold font-heading text-white mb-3 drop-shadow-sm">
                 {services[activeIndex].title}
               </h3>
-              <p className="text-gray-100 mb-6 text-base md:text-lg leading-relaxed">
+              <p className="text-gray-200 mb-6 text-base md:text-lg leading-relaxed">
                 {services[activeIndex].description}
               </p>
 
