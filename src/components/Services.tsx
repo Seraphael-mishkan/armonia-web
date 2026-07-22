@@ -12,7 +12,7 @@ const services = [
   },
   {
     title: 'Seguridad Privada',
-    description: 'Tranquilidad total con protocolos estrictos y personal capacitado.',
+    description: 'Tranquilidad total con protocolos strictly y personal capacitado.',
     icon: ShieldCheck,
     items: ['Coordinación con empresas certificadas', 'Protocolos de acceso', 'Supervisión operativa'],
     video: '/sv_seguridad.mp4'
@@ -52,6 +52,8 @@ export const Services = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const targetTimeRef = useRef<number[]>(services.map(() => 0));
+  const currentTimeRef = useRef<number[]>(services.map(() => 0));
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -64,50 +66,72 @@ export const Services = () => {
   useEffect(() => {
     if (isMobile) return;
 
-    let ticking = false;
+    let animId: number;
+
+    // Smooth LERP loop for video time scrubbing
+    const updateVideos = () => {
+      services.forEach((_, i) => {
+        const video = videoRefs.current[i];
+        if (!video || isNaN(video.duration) || video.duration === 0) return;
+
+        const target = targetTimeRef.current[i];
+        const current = currentTimeRef.current[i];
+        
+        const diff = target - current;
+        if (Math.abs(diff) > 0.001) {
+          const next = current + diff * 0.12; // 0.12 smooth interpolation factor
+          currentTimeRef.current[i] = next;
+          try {
+            video.currentTime = next;
+          } catch {
+            // ignore rapid seek errors
+          }
+        }
+      });
+
+      animId = requestAnimationFrame(updateVideos);
+    };
 
     const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          if (!containerRef.current) return;
-          const { top, height } = containerRef.current.getBoundingClientRect();
-          const windowHeight = window.innerHeight;
-          
-          const scrollableDistance = height - windowHeight;
-          let progress = -top / scrollableDistance;
-          progress = Math.max(0, Math.min(1, progress));
+      if (!containerRef.current) return;
+      const { top, height } = containerRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      
+      const scrollableDistance = height - windowHeight;
+      let progress = -top / scrollableDistance;
+      progress = Math.max(0, Math.min(1, progress));
 
-          const numSegments = services.length;
-          const rawIndex = progress * numSegments;
-          let newIndex = Math.floor(rawIndex);
-          if (newIndex >= numSegments) newIndex = numSegments - 1;
+      const numSegments = services.length;
+      const rawIndex = progress * numSegments;
+      let newIndex = Math.floor(rawIndex);
+      if (newIndex >= numSegments) newIndex = numSegments - 1;
 
-          setActiveIndex(newIndex);
+      setActiveIndex(newIndex);
 
-          const segmentProgress = rawIndex - newIndex;
-          
-          videoRefs.current.forEach((video, i) => {
-            if (!video || isNaN(video.duration)) return;
-            if (i < newIndex) {
-              video.currentTime = video.duration;
-            } else if (i > newIndex) {
-              video.currentTime = 0;
-            } else {
-              video.currentTime = segmentProgress * video.duration;
-            }
-          });
-          
-          ticking = false;
-        });
-        ticking = true;
-      }
+      const segmentProgress = rawIndex - newIndex;
+      
+      services.forEach((_, i) => {
+        const video = videoRefs.current[i];
+        if (!video || isNaN(video.duration) || video.duration === 0) return;
+
+        if (i < newIndex) {
+          targetTimeRef.current[i] = video.duration;
+        } else if (i > newIndex) {
+          targetTimeRef.current[i] = 0;
+        } else {
+          targetTimeRef.current[i] = segmentProgress * video.duration;
+        }
+      });
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    // Initial call to set correct states
     handleScroll();
+    animId = requestAnimationFrame(updateVideos);
     
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      cancelAnimationFrame(animId);
+    };
   }, [isMobile]);
 
   // Fallback for mobile view
@@ -162,7 +186,7 @@ export const Services = () => {
 
   // Desktop Scroll-Scrubbing View
   return (
-    <section id="servicios" ref={containerRef} className="relative bg-brand-black" style={{ height: '700vh' }}>
+    <section id="servicios" ref={containerRef} className="relative bg-brand-black" style={{ height: '1400vh' }}>
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-brand-black flex items-center justify-center">
         
         {/* Continuous Background Videos */}
@@ -174,7 +198,7 @@ export const Services = () => {
             preload="auto"
             muted
             playsInline
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-0 ${activeIndex === index ? 'opacity-100 z-0' : 'opacity-0 -z-10'}`}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${activeIndex === index ? 'opacity-100 z-0' : 'opacity-0 -z-10'}`}
           />
         ))}
         
@@ -182,11 +206,11 @@ export const Services = () => {
         <div className="absolute inset-0 bg-black/40 z-10 pointer-events-none" />
 
         {/* Fixed Title */}
-        <div className="absolute top-24 left-0 w-full z-20 pointer-events-none text-center px-4">
-          <h2 className="text-4xl md:text-5xl font-heading font-bold text-white mb-4 drop-shadow-lg">
+        <div className="absolute top-20 left-0 w-full z-20 pointer-events-none text-center px-4">
+          <h2 className="text-4xl md:text-5xl font-heading font-bold text-white mb-3 drop-shadow-lg">
             Nuestros Servicios
           </h2>
-          <p className="text-xl text-gray-200 max-w-3xl mx-auto drop-shadow-md">
+          <p className="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto drop-shadow-md">
             Soluciones integrales diseñadas para proteger su patrimonio, optimizar recursos y garantizar la tranquilidad de su comunidad.
           </p>
         </div>
@@ -196,27 +220,27 @@ export const Services = () => {
           <AnimatePresence mode="wait">
             <motion.div
               key={activeIndex}
-              initial={{ opacity: 0, x: activeIndex % 2 === 0 ? 100 : -100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: activeIndex % 2 === 0 ? -100 : 100 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              className={`glass-card bg-white/10 p-10 rounded-3xl border border-white/20 shadow-2xl max-w-lg backdrop-blur-md ${activeIndex % 2 === 0 ? 'mr-auto' : 'ml-auto'}`}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -30 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className={`glass-card bg-white/10 p-8 md:p-10 rounded-3xl border border-white/20 shadow-2xl max-w-lg backdrop-blur-md ${activeIndex % 2 === 0 ? 'mr-auto' : 'ml-auto'}`}
             >
-              <div className="w-16 h-16 bg-brand-green/20 rounded-2xl flex items-center justify-center mb-6 border border-brand-green/30">
-                {React.createElement(services[activeIndex].icon, { className: "text-brand-green", size: 32 })}
+              <div className="w-14 h-14 bg-brand-green/20 rounded-2xl flex items-center justify-center mb-6 border border-brand-green/30">
+                {React.createElement(services[activeIndex].icon, { className: "text-brand-green", size: 30 })}
               </div>
-              <h3 className="text-3xl font-bold font-heading text-white mb-4 drop-shadow-sm">
+              <h3 className="text-2xl md:text-3xl font-bold font-heading text-white mb-3 drop-shadow-sm">
                 {services[activeIndex].title}
               </h3>
-              <p className="text-gray-100 mb-8 text-lg leading-relaxed">
+              <p className="text-gray-100 mb-6 text-base md:text-lg leading-relaxed">
                 {services[activeIndex].description}
               </p>
 
               {!services[activeIndex].isSpecial ? (
-                <ul className="space-y-4">
+                <ul className="space-y-3">
                   {services[activeIndex].items.map((item, i) => (
-                    <li key={i} className="flex items-start gap-3 text-base text-gray-200">
-                      <ArrowRight size={20} className="text-brand-green mt-0.5 shrink-0" />
+                    <li key={i} className="flex items-start gap-3 text-sm md:text-base text-gray-200">
+                      <ArrowRight size={18} className="text-brand-green mt-0.5 shrink-0" />
                       <span className="font-medium drop-shadow-sm">{item}</span>
                     </li>
                   ))}
@@ -226,9 +250,9 @@ export const Services = () => {
                   href="https://wa.me/527352894618?text=Hola%20visite%20el%20sitio%20web%20y%20me%20interesa%20un%20proyecto%20de%20remodelacion" 
                   target="_blank" 
                   rel="noreferrer" 
-                  className="inline-flex items-center gap-2 font-medium bg-brand-green hover:bg-brand-darkGreen text-white px-8 py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(139,195,74,0.4)] hover:shadow-[0_0_30px_rgba(139,195,74,0.6)] transform hover:-translate-y-1"
+                  className="inline-flex items-center gap-2 font-medium bg-brand-green hover:bg-brand-darkGreen text-white px-7 py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(139,195,74,0.4)] hover:shadow-[0_0_30px_rgba(139,195,74,0.6)] transform hover:-translate-y-1"
                 >
-                  Cotizar proyecto <ArrowRight size={20} />
+                  Cotizar proyecto <ArrowRight size={18} />
                 </a>
               )}
             </motion.div>
