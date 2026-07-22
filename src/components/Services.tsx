@@ -1,57 +1,62 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Building2, Droplets, ShieldCheck, Trees, Wrench } from 'lucide-react';
+import { ArrowRight, Building2, Droplets, ShieldCheck, Trees, Wrench, Loader2 } from 'lucide-react';
+
+const TOTAL_FRAMES = 480;
 
 const services = [
   {
     title: 'Administración Integral',
     description: 'Gestión operativa, financiera y legal para condominios, enfocada en transparencia y orden.',
     icon: Building2,
-    items: ['Control de ingresos y egresos', 'Estados financieros mensuales', 'Recuperación de cartera vencida', 'Organización de asambleas'],
-    video: '/sv_admin.mp4'
+    items: ['Control de ingresos y egresos', 'Estados financieros mensuales', 'Recuperación de cartera vencida', 'Organización de asambleas']
   },
   {
     title: 'Seguridad Privada',
     description: 'Tranquilidad total con protocolos estrictos y personal capacitado.',
     icon: ShieldCheck,
-    items: ['Coordinación con empresas certificadas', 'Protocolos de acceso', 'Supervisión operativa'],
-    video: '/sv_seguridad.mp4'
+    items: ['Coordinación con empresas certificadas', 'Protocolos de acceso', 'Supervisión operativa']
   },
   {
     title: 'Jardinería Profesional',
     description: 'Conservación estética del entorno con diseño y mantenimiento de áreas verdes.',
     icon: Trees,
-    items: ['Diseño y mantenimiento', 'Poda y fertilización', 'Control fitosanitario'],
-    video: '/sv_jardineria.mp4'
+    items: ['Diseño y mantenimiento', 'Poda y fertilización', 'Control fitosanitario']
   },
   {
     title: 'Limpieza de Albercas',
     description: 'Tratamiento y mantenimiento profesional para instalaciones acuáticas impecables.',
     icon: Droplets,
-    items: ['Tratamiento químico', 'Limpieza profunda', 'Control de calidad del agua'],
-    video: '/sv_albercas.mp4'
+    items: ['Tratamiento químico', 'Limpieza profunda', 'Control de calidad del agua']
   },
   {
     title: 'Mantenimiento General',
     description: 'Conservación técnica de áreas comunes y particulares para asegurar la plusvalía del inmueble.',
     icon: Wrench,
-    items: ['Supervisión preventiva y correctiva', 'Coordinación de proveedores', 'Proyectos de mejora'],
-    video: '/sv_mantenimiento.mp4'
+    items: ['Supervisión preventiva y correctiva', 'Coordinación de proveedores', 'Proyectos de mejora']
   },
   {
     title: 'Remodelación y Proyectos',
     description: 'Capacidad integral para proyectos de construcción y remodelación que fortalecen la infraestructura y plusvalía del condominio.',
     icon: Wrench,
     items: [],
-    video: '/sv_remodelacion.mp4',
     isSpecial: true
   }
 ];
 
 export const Services = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+
+  // Preloader States
+  const [loadedCount, setLoadedCount] = useState(0);
+  const [isPreloading, setIsPreloading] = useState(true);
+  const imagesRef = useRef<HTMLImageElement[]>([]);
+
+  const targetProgressRef = useRef(0);
+  const currentProgressRef = useRef(0);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 1024);
@@ -60,35 +65,106 @@ export const Services = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Preload frames
   useEffect(() => {
     if (isMobile) return;
+
+    let count = 0;
+    const imgs: HTMLImageElement[] = [];
+
+    for (let i = 1; i <= TOTAL_FRAMES; i++) {
+      const numStr = String(i).padStart(4, '0');
+      const img = new Image();
+      img.src = `/frames/frame_${numStr}.jpg`;
+
+      const handleLoad = () => {
+        count++;
+        setLoadedCount(count);
+        if (count >= TOTAL_FRAMES) {
+          setIsPreloading(false);
+        }
+      };
+
+      img.onload = handleLoad;
+      img.onerror = handleLoad;
+      imgs.push(img);
+    }
+    imagesRef.current = imgs;
+  }, [isMobile]);
+
+  // Canvas loop & scroll handler
+  useEffect(() => {
+    if (isMobile) return;
+
+    let animId: number;
+
+    const drawCoverImage = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement, img: HTMLImageElement) => {
+      const cw = canvas.width;
+      const ch = canvas.height;
+      const scale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
+      const sw = img.naturalWidth * scale;
+      const sh = img.naturalHeight * scale;
+
+      ctx.clearRect(0, 0, cw, ch);
+      ctx.drawImage(img, (cw - sw) / 2, (ch - sh) / 2, sw, sh);
+    };
+
+    const render = () => {
+      // Smooth LERP interpolation for buttery scroll (both down and up/reverse!)
+      const diff = targetProgressRef.current - currentProgressRef.current;
+      currentProgressRef.current += diff * 0.15;
+
+      const progress = Math.max(0, Math.min(1, currentProgressRef.current));
+      const frameIdx = Math.min(TOTAL_FRAMES - 1, Math.max(0, Math.round(progress * (TOTAL_FRAMES - 1))));
+
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+          }
+          const img = imagesRef.current[frameIdx];
+          if (img && img.complete && img.naturalWidth) {
+            drawCoverImage(ctx, canvas, img);
+          }
+        }
+      }
+
+      // Calculate active service index
+      const numSegments = services.length;
+      const rawIdx = progress * numSegments;
+      let newIdx = Math.floor(rawIdx);
+      if (newIdx >= numSegments) newIdx = numSegments - 1;
+      setActiveIndex(newIdx);
+
+      animId = requestAnimationFrame(render);
+    };
 
     const handleScroll = () => {
       if (!containerRef.current) return;
       const { top, height } = containerRef.current.getBoundingClientRect();
       const windowHeight = window.innerHeight;
-      
+
       const scrollableDistance = height - windowHeight;
       if (scrollableDistance <= 0) return;
 
-      let progress = -top / scrollableDistance;
-      progress = Math.max(0, Math.min(1, progress));
-
-      const numSegments = services.length;
-      const rawIndex = progress * numSegments;
-      let newIndex = Math.floor(rawIndex);
-      if (newIndex >= numSegments) newIndex = numSegments - 1;
-
-      setActiveIndex(newIndex);
+      let p = -top / scrollableDistance;
+      targetProgressRef.current = Math.max(0, Math.min(1, p));
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
-    
-    return () => window.removeEventListener('scroll', handleScroll);
+    animId = requestAnimationFrame(render);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      cancelAnimationFrame(animId);
+    };
   }, [isMobile]);
 
-  // Fallback for mobile view
+  // Mobile Fallback
   if (isMobile) {
     return (
       <section id="servicios" className="py-24 bg-brand-altBg">
@@ -100,14 +176,6 @@ export const Services = () => {
           <div className="flex flex-col gap-12">
             {services.map((service, index) => (
               <div key={index} className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100">
-                <div className="h-64 w-full relative">
-                  <video 
-                    src={service.video} 
-                    className="w-full h-full object-cover" 
-                    autoPlay muted loop playsInline 
-                  />
-                  <div className="absolute inset-0 bg-black/30" />
-                </div>
                 <div className="p-8">
                   <div className="w-14 h-14 bg-brand-altBg rounded-xl flex items-center justify-center mb-6">
                     <service.icon className="text-brand-green" size={28} />
@@ -138,50 +206,67 @@ export const Services = () => {
     );
   }
 
-  // Desktop Sticky Video Experience (Astra Aviation Style)
+  const loadPercent = Math.min(100, Math.round((loadedCount / TOTAL_FRAMES) * 100));
+
   return (
-    <section id="servicios" ref={containerRef} className="relative bg-brand-black" style={{ height: '900vh' }}>
+    <section id="servicios" ref={containerRef} className="relative bg-brand-black" style={{ height: '800vh' }}>
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-brand-black flex items-center justify-center">
         
-        {/* Continuous Autoplaying Background Videos */}
-        {services.map((service, index) => (
-          <video
-            key={index}
-            src={service.video}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${activeIndex === index ? 'opacity-100 z-0 scale-100' : 'opacity-0 -z-10 scale-105'}`}
-          />
-        ))}
+        {/* Canvas Engine */}
+        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full object-cover z-0" />
+
+        {/* Preloader Overlay curtain */}
+        <AnimatePresence>
+          {isPreloading && (
+            <motion.div
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.6 }}
+              className="absolute inset-0 z-50 bg-brand-black flex flex-col items-center justify-center p-6 text-center"
+            >
+              <div className="w-16 h-16 bg-brand-green/20 rounded-2xl flex items-center justify-center mb-6 border border-brand-green/40 animate-pulse">
+                <Building2 className="text-brand-green" size={32} />
+              </div>
+              <h3 className="text-2xl font-bold font-heading text-white mb-2">Armonía Experiencia Interactiva</h3>
+              <p className="text-gray-400 text-sm mb-6 max-w-sm">Cargando secuencia de alta definición para navegación fluida en 3D...</p>
+
+              {/* Progress bar */}
+              <div className="w-64 bg-white/10 h-2 rounded-full overflow-hidden mb-3 border border-white/10">
+                <motion.div 
+                  className="bg-brand-green h-full rounded-full transition-all duration-150"
+                  style={{ width: `${loadPercent}%` }}
+                />
+              </div>
+              <span className="text-xs font-mono font-semibold text-brand-green">{loadPercent}%</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
         
-        {/* Cinematic dark overlay gradient for maximum text legibility */}
+        {/* Cinematic Overlay Gradient */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/70 z-10 pointer-events-none" />
 
         {/* Fixed Header Title */}
-        <div className="absolute top-14 md:top-18 left-0 w-full z-20 pointer-events-none text-center px-4">
+        <div className="absolute top-12 md:top-16 left-0 w-full z-20 pointer-events-none text-center px-4">
           <span className="inline-block text-brand-green font-semibold tracking-wider text-xs md:text-sm uppercase mb-2 bg-brand-black/60 px-4 py-1 rounded-full backdrop-blur-md border border-brand-green/30">
             Experiencia y Profesionalismo
           </span>
-          <h2 className="text-3xl md:text-5xl font-heading font-bold text-white mb-2 md:mb-3 drop-shadow-lg">
+          <h2 className="text-3xl md:text-5xl font-heading font-bold text-white mb-2 drop-shadow-lg">
             Nuestros Servicios
           </h2>
-          <p className="text-base md:text-xl text-gray-200 max-w-3xl mx-auto drop-shadow-md">
+          <p className="text-base md:text-lg text-gray-200 max-w-3xl mx-auto drop-shadow-md">
             Soluciones integrales diseñadas para proteger su patrimonio, optimizar recursos y garantizar la tranquilidad de su comunidad.
           </p>
         </div>
 
-        {/* Floating Animated Cards */}
-        <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 md:mt-16">
+        {/* Floating Service Card */}
+        <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 md:mt-20">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeIndex}
-              initial={{ opacity: 0, y: 40, filter: 'blur(10px)' }}
+              initial={{ opacity: 0, y: 30, filter: 'blur(8px)' }}
               animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, y: -40, filter: 'blur(10px)' }}
-              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+              exit={{ opacity: 0, y: -30, filter: 'blur(8px)' }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
               className={`glass-card bg-white/10 p-8 md:p-10 rounded-3xl border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.5)] max-w-lg backdrop-blur-xl ${activeIndex % 2 === 0 ? 'mr-auto' : 'ml-auto'}`}
             >
               <div className="flex items-center gap-4 mb-6">
@@ -222,7 +307,7 @@ export const Services = () => {
           </AnimatePresence>
         </div>
 
-        {/* Progress Dots Navigation */}
+        {/* Progress Navigation Dots */}
         <div className="absolute right-8 top-1/2 -translate-y-1/2 z-30 flex flex-col gap-4">
           {services.map((service, idx) => (
             <button
