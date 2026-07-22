@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Building2, Droplets, ShieldCheck, Trees, Wrench, Loader2 } from 'lucide-react';
+import { ArrowRight, Building2, Droplets, ShieldCheck, Trees, Wrench } from 'lucide-react';
 
 const TOTAL_FRAMES = 480;
 
@@ -9,37 +9,43 @@ const services = [
     title: 'Administración Integral',
     description: 'Gestión operativa, financiera y legal para condominios, enfocada en transparencia y orden.',
     icon: Building2,
-    items: ['Control de ingresos y egresos', 'Estados financieros mensuales', 'Recuperación de cartera vencida', 'Organización de asambleas']
+    items: ['Control de ingresos y egresos', 'Estados financieros mensuales', 'Recuperación de cartera vencida', 'Organización de asambleas'],
+    video: '/sv_admin.mp4'
   },
   {
     title: 'Seguridad Privada',
     description: 'Tranquilidad total con protocolos estrictos y personal capacitado.',
     icon: ShieldCheck,
-    items: ['Coordinación con empresas certificadas', 'Protocolos de acceso', 'Supervisión operativa']
+    items: ['Coordinación con empresas certificadas', 'Protocolos de acceso', 'Supervisión operativa'],
+    video: '/sv_seguridad.mp4'
   },
   {
     title: 'Jardinería Profesional',
     description: 'Conservación estética del entorno con diseño y mantenimiento de áreas verdes.',
     icon: Trees,
-    items: ['Diseño y mantenimiento', 'Poda y fertilización', 'Control fitosanitario']
+    items: ['Diseño y mantenimiento', 'Poda y fertilización', 'Control fitosanitario'],
+    video: '/sv_jardineria.mp4'
   },
   {
     title: 'Limpieza de Albercas',
     description: 'Tratamiento y mantenimiento profesional para instalaciones acuáticas impecables.',
     icon: Droplets,
-    items: ['Tratamiento químico', 'Limpieza profunda', 'Control de calidad del agua']
+    items: ['Tratamiento químico', 'Limpieza profunda', 'Control de calidad del agua'],
+    video: '/sv_albercas.mp4'
   },
   {
     title: 'Mantenimiento General',
     description: 'Conservación técnica de áreas comunes y particulares para asegurar la plusvalía del inmueble.',
     icon: Wrench,
-    items: ['Supervisión preventiva y correctiva', 'Coordinación de proveedores', 'Proyectos de mejora']
+    items: ['Supervisión preventiva y correctiva', 'Coordinación de proveedores', 'Proyectos de mejora'],
+    video: '/sv_mantenimiento.mp4'
   },
   {
     title: 'Remodelación y Proyectos',
     description: 'Capacidad integral para proyectos de construcción y remodelación que fortalecen la infraestructura y plusvalía del condominio.',
     icon: Wrench,
     items: [],
+    video: '/sv_remodelacion.mp4',
     isSpecial: true
   }
 ];
@@ -65,9 +71,12 @@ export const Services = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Preload frames
+  // Preload frames ONLY on Desktop (>=1024px) to avoid downloading 480 frames on mobile
   useEffect(() => {
-    if (isMobile) return;
+    if (isMobile) {
+      setIsPreloading(false);
+      return;
+    }
 
     let count = 0;
     const imgs: HTMLImageElement[] = [];
@@ -92,7 +101,7 @@ export const Services = () => {
     imagesRef.current = imgs;
   }, [isMobile]);
 
-  // Canvas loop & scroll handler
+  // Canvas loop & scroll handler for PC
   useEffect(() => {
     if (isMobile) return;
 
@@ -164,36 +173,62 @@ export const Services = () => {
     };
   }, [isMobile]);
 
-  // Mobile Fallback
+  // Mobile View Fallback (<1024px): Stacked vertical cards with autoplaying videos inside each card
   if (isMobile) {
     return (
-      <section id="servicios" className="py-24 bg-brand-altBg">
+      <section id="servicios" className="py-20 bg-brand-altBg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-16">
+          <div className="text-center mb-14">
+            <span className="inline-block text-brand-green font-semibold tracking-wider text-xs uppercase mb-2 bg-brand-green/10 px-3 py-1 rounded-full border border-brand-green/20">
+              Soluciones Condominiales
+            </span>
             <h2 className="text-3xl font-heading font-bold text-brand-black mb-4">Nuestros Servicios</h2>
-            <p className="text-lg text-brand-darkGray">Soluciones integrales diseñadas para proteger su patrimonio, optimizar recursos y garantizar la tranquilidad de su comunidad.</p>
+            <p className="text-base text-brand-darkGray max-w-2xl mx-auto">
+              Soluciones integrales diseñadas para proteger su patrimonio, optimizar recursos y garantizar la tranquilidad de su comunidad.
+            </p>
           </div>
-          <div className="flex flex-col gap-12">
+          <div className="flex flex-col gap-10">
             {services.map((service, index) => (
-              <div key={index} className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100">
-                <div className="p-8">
-                  <div className="w-14 h-14 bg-brand-altBg rounded-xl flex items-center justify-center mb-6">
+              <div key={index} className="bg-white rounded-3xl overflow-hidden shadow-xl border border-gray-100 transition-all duration-300">
+                <div className="h-64 w-full relative overflow-hidden bg-brand-black">
+                  <video 
+                    src={service.video} 
+                    className="w-full h-full object-cover" 
+                    autoPlay 
+                    muted 
+                    loop 
+                    playsInline 
+                  />
+                  <div className="absolute inset-0 video-overlay-gradient pointer-events-none" />
+                  <div className="absolute bottom-4 left-4 z-10 flex items-center gap-2">
+                    <span className="text-xs font-bold text-white bg-black/60 px-3 py-1 rounded-md backdrop-blur-sm border border-white/20">
+                      0{index + 1} / 0{services.length}
+                    </span>
+                  </div>
+                </div>
+                <div className="p-7">
+                  <div className="w-14 h-14 bg-brand-green/10 rounded-2xl flex items-center justify-center mb-5 border border-brand-green/20">
                     <service.icon className="text-brand-green" size={28} />
                   </div>
                   <h3 className="text-xl font-bold font-heading text-brand-black mb-3">{service.title}</h3>
-                  <p className="text-brand-darkGray mb-6 text-sm">{service.description}</p>
+                  <p className="text-brand-darkGray mb-6 text-sm leading-relaxed">{service.description}</p>
                   
                   {!service.isSpecial ? (
-                    <ul className="space-y-2">
+                    <ul className="space-y-3">
                       {service.items.map((item, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-brand-darkGray">
+                        <li key={i} className="flex items-start gap-2.5 text-sm text-brand-darkGray font-medium">
                           <ArrowRight size={16} className="text-brand-green mt-0.5 shrink-0" />
                           <span>{item}</span>
                         </li>
                       ))}
                     </ul>
                   ) : (
-                    <a href="https://wa.me/527352894618?text=Hola%20visite%20el%20sitio%20web%20y%20me%20interesa%20un%20proyecto%20de%20remodelacion" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 font-medium bg-brand-green hover:bg-brand-darkGreen text-white px-5 py-2.5 rounded-lg w-fit transition-colors">
+                    <a 
+                      href="https://wa.me/527352894618?text=Hola%20visite%20el%20sitio%20web%20y%20me%20interesa%20un%20proyecto%20de%20remodelacion" 
+                      target="_blank" 
+                      rel="noreferrer" 
+                      className="inline-flex items-center gap-2 font-medium bg-brand-green hover:bg-brand-darkGreen text-white px-6 py-3 rounded-xl transition-all shadow-md w-fit"
+                    >
                       Cotizar proyecto <ArrowRight size={18} />
                     </a>
                   )}
@@ -208,6 +243,7 @@ export const Services = () => {
 
   const loadPercent = Math.min(100, Math.round((loadedCount / TOTAL_FRAMES) * 100));
 
+  // Desktop Scroll-Scrubbing Canvas View (>=1024px)
   return (
     <section id="servicios" ref={containerRef} className="relative bg-brand-black" style={{ height: '800vh' }}>
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-brand-black flex items-center justify-center">
@@ -228,7 +264,7 @@ export const Services = () => {
                 <Building2 className="text-brand-green" size={32} />
               </div>
               <h3 className="text-2xl font-bold font-heading text-white mb-2">Armonía Experiencia Interactiva</h3>
-              <p className="text-gray-400 text-sm mb-6 max-w-sm">Cargando secuencia de alta definición para navegación fluida en 3D...</p>
+              <p className="text-gray-400 text-sm mb-6 max-w-sm">Cargando secuencia de alta definición para navegación fluida...</p>
 
               {/* Progress bar */}
               <div className="w-64 bg-white/10 h-2 rounded-full overflow-hidden mb-3 border border-white/10">
@@ -243,7 +279,7 @@ export const Services = () => {
         </AnimatePresence>
         
         {/* Cinematic Overlay Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/70 z-10 pointer-events-none" />
+        <div className="absolute inset-0 video-overlay-gradient z-10 pointer-events-none" />
 
         {/* Fixed Header Title */}
         <div className="absolute top-12 md:top-16 left-0 w-full z-20 pointer-events-none text-center px-4">
@@ -263,11 +299,11 @@ export const Services = () => {
           <AnimatePresence mode="wait">
             <motion.div
               key={activeIndex}
-              initial={{ opacity: 0, y: 30, filter: 'blur(8px)' }}
-              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, y: -30, filter: 'blur(8px)' }}
+              initial={{ opacity: 0, x: activeIndex % 2 === 0 ? 50 : -50, filter: 'blur(8px)' }}
+              animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, x: activeIndex % 2 === 0 ? -50 : 50, filter: 'blur(8px)' }}
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className={`glass-card bg-white/10 p-8 md:p-10 rounded-3xl border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.5)] max-w-lg backdrop-blur-xl ${activeIndex % 2 === 0 ? 'mr-auto' : 'ml-auto'}`}
+              className={`glass-card bg-white/10 p-8 md:p-10 rounded-3xl border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.5)] max-w-lg backdrop-blur-xl ${activeIndex % 2 === 0 ? 'mr-auto service-card-enter-left' : 'ml-auto service-card-enter-right'}`}
             >
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-14 h-14 bg-brand-green/20 rounded-2xl flex items-center justify-center border border-brand-green/40 shadow-inner">
@@ -329,7 +365,7 @@ export const Services = () => {
               <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 mr-3 text-xs font-semibold text-white bg-black/70 px-2.5 py-1 rounded backdrop-blur-sm whitespace-nowrap pointer-events-none">
                 {service.title}
               </span>
-              <div className={`w-3 rounded-full transition-all duration-500 ${activeIndex === idx ? 'h-10 bg-brand-green shadow-[0_0_12px_#8bc34a]' : 'h-3 bg-white/40 hover:bg-white/70'}`} />
+              <div className={activeIndex === idx ? 'progress-dot progress-dot-active' : 'progress-dot'} />
             </button>
           ))}
         </div>
